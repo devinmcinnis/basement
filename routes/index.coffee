@@ -3,6 +3,7 @@ request = require 'request'
 parseXML = require('xml2js').parseString
 getStream = require './getStream'
 games = require './schedule'
+gameClass = require './games'
 
 #
 # * GET home page.
