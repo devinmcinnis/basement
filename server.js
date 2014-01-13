@@ -27,7 +27,7 @@
 
   server = http.createServer(app);
 
-  io = require("socket.io").listen(server);
+  io = require('./app-socket')(server);
 
   PORT = process.env.PORT || 5000;
 
@@ -40,7 +40,7 @@
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
-    return app.use(express["static"](path.join(__dirname, "public/")));
+    app.use(express["static"](path.join(__dirname, "public/")));
   });
 
   app.configure("development", function () {
@@ -48,7 +48,7 @@
       dumpExceptions: true,
       showStack: true
     }));
-    return app.locals.pretty = true;
+    app.locals.pretty = true;
   });
 
   app.configure("production", function () {
@@ -62,28 +62,5 @@
       return console.log(("\n\n==================================================\nExpress server running on: http://localhost:" + (app.get("port")) + "\n==================================================").green);
     });
   }
-
-  io.configure("development", function () {
-    return io.set("log level", 2);
-  });
-
-  io.configure("production", function () {
-    io.set("transports", ["websocket", "flashsocket", "htmlfile", "xhr-polling", "jsonp-polling"]);
-    io.set("polling duration", 3);
-    io.enable("browser client minification");
-    io.enable("browser client etag");
-    io.enable("browser client gzip");
-    return io.set("log level", 1);
-  });
-
-  io.sockets.on("connection", function (socket) {
-    return socket.on("hello", function () {
-      return socket.emit("hello-back", {
-        data: "the basement"
-      });
-    });
-  });
-
-  exports.io = io;
 
 }).call(this);
