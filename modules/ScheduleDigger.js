@@ -6,7 +6,6 @@
 
   var Promise     = require("bluebird");
 
-
   var request     = Promise.promisify(require('request'));
 
   var parseXML    = require('xml2js');
@@ -28,7 +27,6 @@
   util.inherits(ScheduleEvent, events.EventEmitter);
 
   var schedule = new ScheduleEvent();
-
 
   var buildURL = function(url, obj) {
     var result;

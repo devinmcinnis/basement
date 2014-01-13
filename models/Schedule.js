@@ -10,7 +10,7 @@
   var StreamsDigger = require('../modules/StreamsDigger');
 
   var formatSchedule = function(league, json){
-    var games = {}, dateNow = new Date(), dateString, dateStringId, gId, game, gameDate, mNum, minDiff, months, newGame, time, xmlGames, _i, _len;
+    var games = {}, dateNow = new Date(), dateString, dateStringId, gId, game, gameDate, mNum, minDiff, months, newGame, time, xmlGames, _i, _len, streamGame;
 
     // Only months left in this NFL season
     months = ['January', 'February'];
@@ -54,15 +54,22 @@
       // Minute difference between the current time and game start time
       minDiff = Math.floor(((Math.abs(gameDate - dateNow)) / 1000) / 60);
 
+      // Info to pass when digging stream
+      streamGame = {
+        data: newGame,
+        date: dateString,
+        id: dateStringId
+      };
+
       // If the gameTime is before now
       if (gameDate < dateNow) {
+
         // And within 15 minutes of the game
         if (minDiff < 15) {
-          // Set the game to "active"
           newGame.active = true;
 
           // Get the stream URL if we don't already have it
-          StreamsDigger.getStream(game, newGame.hTeam);
+          StreamsDigger.getStream(streamGame);
 
         // If the game is further than 15 minutes away, set to "inactive"
         } else {
@@ -71,13 +78,15 @@
 
       // If the game has already started
       } else {
+
         // If the game is within 3 hours of start time,
         // set game to "active" and find the stream URL
         if (minDiff < 180) {
           newGame.active = true;
 
           // Get the stream URL if we don't already have it
-          StreamsDigger.getStream(game, newGame.hTeam);
+          StreamsDigger.getStream(streamGame);
+
         } else {
           newGame.active = false;
         }
@@ -85,7 +94,7 @@
 
       // If games for the specified game day doesn't exist, create it
       if (!games[dateString]) {
-        games[dateString] = {}
+        games[dateString] = {};
       }
 
       // Store game info based on the date and game ID
