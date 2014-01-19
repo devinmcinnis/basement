@@ -28,7 +28,6 @@
 
   var schedule = new ScheduleEvent();
 
-
   var buildURL = function(url, obj) {
     var result;
 
