@@ -2,13 +2,16 @@ extends layout/base
 
 block main-content
   //- print the fucking URLs here
-  for gameDay in games
-    for game in gameDay
-      .game
-        p= game.date
-        p
-          span.margin= game.vTeam
-          span at
-          span.margin= game.hTeam
-        if game.active
-          p.streamURL.margin(id=game.hTeam)= game.streamURL
+  if games
+    for gameDay in games
+      for game in gameDay
+        .game
+          p= game.date
+          p
+            span.margin= game.vTeam
+            span at
+            span.margin= game.hTeam
+          if game.active
+            p.streamURL.margin(id=game.hTeam)= game.streamURL
+  else
+    h1 fetching game schedule, please check back in 59 seconds

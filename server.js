@@ -5,31 +5,19 @@
 (function () {
   "use strict";
 
-  var io, PORT, app, express, fs, http, path, mongoose, routes, server;
-
   require('coffee-script');
-
   require('colors');
-
-  express = require("express");
-
-  http = require("http");
-
-  path = require("path");
-
-  fs = require("fs");
-
-  routes = require("./routes");
-
-  mongoose = require("mongoose");
-
-  app = express();
-
-  server = http.createServer(app);
-
-  io = require('./app-socket')(server);
-
-  PORT = process.env.PORT || 5000;
+  var express = require("express");
+  var http = require("http");
+  var path = require("path");
+  var fs = require("fs");
+  var routes = require("./routes");
+  var mongoose = require("mongoose");
+  var app = express();
+  var server = http.createServer(app);
+  var io = require('./app-socket')(server);
+  var PORT = process.env.PORT || 5000;
+  var schedule = require('./models/Schedule.js');
 
   app.configure(function () {
     app.set("port", process.env.PORT || PORT);
