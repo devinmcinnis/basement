@@ -12,7 +12,7 @@
   var abbrs = require('../modules/TeamAbbr');
 
   var formatSchedule = function(league, json){
-    var games = {}, dateNow = Date.now(), dateString, dateStringId, gId, game, gameDate, gameTime, mNum, minDiff, months, newGame, time, json, _i, _len, streamGame;
+    var games = {}, dateNow = Date.now(), dateString, dateStringId, gId, game, gameDate, gameTime, mNum, minDiff, months, newGame, time, json, _i, _len, streamGame, gt;
 
     // Only months left in this NFL season
     months = ['January', 'February'];
@@ -24,15 +24,19 @@
       gameTime = game.kickoff * 1000 - (1000 * 60 * 60 * 5);
       gameDate = new Date(gameTime);
 
-      newGame = {
+      gt = new Date(gameTime);
+      dateString = '' + (gt.getMonth() + 1) + gt.getDate() + gt.getFullYear();
+
+      streamGame = {
         hTeam: abbrs[game.team[1].id],
         vTeam: abbrs[game.team[0].id],
         sTime: gameTime
       };
 
+      streamGame.date = gt;
+
       // Minute difference between the current time and game start time
       minDiff = Math.floor((gameTime - dateNow) / (1000 * 60));
-      console.log("minDiff: " + minDiff);
 
       // If the game hasn't started
       if (gameTime > dateNow ) {
@@ -40,7 +44,7 @@
         // And within 15 minutes of the game
         if (minDiff < 15) {
           // Get the stream URL if we don't already have it
-          StreamsDigger.getStream(newGame);
+          StreamsDigger.getStream(streamGame);
 
         // If the game is further than 15 minutes away, set to "inactive"
         } else {
@@ -61,10 +65,6 @@
         }
       }
 
-      var gt = new Date(gameTime);
-      dateString = '' + (gt.getMonth() + 1) + gt.getDate() + gt.getFullYear();
-      newGame.date = gt;
-
       // If games for the specified game day doesn't exist, create it
       if (!games[dateString]) {
         games[dateString] = {};
@@ -72,7 +72,7 @@
 
       // Store game info based on the date and game ID
       if (!games[dateString][gameTime]) {
-        games[dateString][gameTime] = newGame;
+        games[dateString][gameTime] = streamGame;
       }
 
     }
