@@ -59,15 +59,14 @@
       })
     ).spread(
       function (res, body){
-        console.log('hello sucky schedule');
         if(res.statusCode == 200){
           body = JSON.parse(body);
+          console.log('>>> got week number: ' + body[league + "Schedule"].week);
           return body[league + "Schedule"].week;
         }
       }
     ).then(
       function(week){
-        console.log('hello week', week);
         request(
           buildURL(urlSchedule, {
             "league": league,
@@ -75,9 +74,9 @@
           })
         ).spread(
           function (res, body){
-            console.log('hello real schedule');
             parseXML.parseString(body, function(err, json) {
               if(res.statusCode == 200){
+                console.log('>>> got schedule json');
                 // emit for all who are listening for schedule data
                 schedule.emit('data', league, json);
               }

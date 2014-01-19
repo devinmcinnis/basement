@@ -8,6 +8,7 @@
   var leagues = ['nfl'];
   var scheduleDigger = require('../modules/ScheduleDigger');
   var StreamsDigger = require('../modules/StreamsDigger');
+  var DIGGER_INTERVAL = 1000 * 60 * 15; // 15min
 
   var formatSchedule = function(league, json){
     var games = {}, date = new Date(), dateString, dateStringId, gId, game, gameDate, mNum, minDiff, months, newGame, time, x, xmlGames, _i, _len;
@@ -42,7 +43,7 @@
       gameDate = new Date(dateString + ' ' + time);
       gameDate.setHours(parseInt(gameDate.getHours(), 10) + 17);
       minDiff = Math.floor(((Math.abs(gameDate - date)) / 1000) / 60);
-      console.log(minDiff);
+      console.log("minDiff: " + minDiff);
       if (minDiff < 60) {
         // try to find the right stream url and add it this game
         console.log(date, gameDate, minDiff, newGame.hTeam);
@@ -56,6 +57,13 @@
     return;
   };
 
+  // loop through the available leagues and get all schedule
+  var getAllSchedule = function(){
+    leagues.forEach(function(league, i){
+      scheduleDigger.getSchedule(league);
+    });
+  };
+
   // once we hear about the data, make the game list available right away
   // while we look for stream url
   scheduleDigger.on('data', function(league, json){
@@ -65,11 +73,11 @@
   // format and look for the stream urls
   scheduleDigger.once('data', formatSchedule);
 
-  // get schedule for each league
-  // TODO: run this once every hour to update schedule
-  leagues.forEach(function(league, i){
-    scheduleDigger.getSchedule(league);
-  });
+  // get schedule for each league every DIGGER_INTERVAL
+  setInterval(getAllSchedule, DIGGER_INTERVAL);
+
+  // init the schedule
+  getAllSchedule();
 
   exports = module.exports = SCHEDULE;
 }());
