@@ -29,7 +29,7 @@
         return request(streamURL, function(err, resp, body) {
           if (err !== null && resp !== 'undefined') {
             console.log(team + ' stream is ' + streamURL);
-            game = SCHEDULE[stream.date][stream.id];
+            game = SCHEDULE[stream.date][stream.sTime];
             game.streamURL = streamURL;
             game.active = true;
             return;

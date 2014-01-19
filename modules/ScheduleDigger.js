@@ -56,43 +56,22 @@
       buildURL(urlWeek, {
         "league": league
       })
-    ).spread(
-      function (res, body){
-        if(res.statusCode == 200){
-          body = JSON.parse(body);
-          console.log('>>> got week number: ' + body[league + "Schedule"].week);
-          return body[league + "Schedule"].week;
-        }
-      }
     ).then(
-      function(week){
-        request(
-          buildURL(urlSchedule, {
-            "league": league,
-            "week": week
-          })
-        ).spread(
-          function (res, body){
-            parseXML.parseString(body, function(err, json) {
-              if(res.statusCode == 200){
-                console.log('>>> got schedule json');
-                // emit for all who are listening for schedule data
-                schedule.emit('data', league, json);
-              }
-            });
-          }
-        ).catch(
-          function(err) {
-            console.error(err);
-          }
-        );
+      function (res){
+        var res = res[0];
+        if(res.statusCode == 200){
+          var body = JSON.parse(res.body);
+          body = body[league + 'Schedule'].matchup;
+
+          // emit for all who are listening for schedule data
+          schedule.emit('data', league, body);
+        }
       }
     ).catch(
       function(err) {
         console.error(err);
       }
     );
-
   };
 
   schedule.getSchedule = getSchedule;

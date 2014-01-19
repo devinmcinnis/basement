@@ -6,17 +6,12 @@ block main-content
     for gameDay in games
       for game in gameDay
         .game
-          p= game.gMonth + ' ' + game.gDay
+          p= game.date
           p
-            span.margin #{game.sTime}pm -
-            if game.vScore != ""
-              span= game.vScore
             span.margin= game.vTeam
             span at
             span.margin= game.hTeam
-            if game.hScore != ""
-              span= game.hScore
           if game.active
-            p.streamURL.margin(id=game.hTeam)= game.stream
+            p.streamURL.margin(id=game.hTeam)= game.streamURL
   else
     h1 fetching game schedule, please check back in one minute
